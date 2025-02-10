@@ -1,0 +1,31 @@
+{
+    "name": "VENDOR/apexflightops-module",
+    "type": "phpvms-module",
+    "description": "",
+    "authors": [
+        {
+            "name": "",
+            "email": ""
+        }
+    ],
+    "require": {
+        "composer/installers": "~1.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\ApexFlightOps\\Providers\\AppServiceProvider",
+                "Modules\\ApexFlightOps\\Providers\\EventServiceProvider",
+                "Modules\\ApexFlightOps\\Providers\\RouteServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ApexFlightOps\\": "."
+        }
+    }
+}

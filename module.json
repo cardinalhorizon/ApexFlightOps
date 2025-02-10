@@ -1,0 +1,16 @@
+{
+    "name": "ApexFlightOps",
+    "alias": "apexflightops",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\ApexFlightOps\\Providers\\AppServiceProvider",
+        "Modules\\ApexFlightOps\\Providers\\EventServiceProvider",
+        "Modules\\ApexFlightOps\\Providers\\RouteServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
