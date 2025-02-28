@@ -2,7 +2,7 @@
     "name": "ApexFlightOps",
     "alias": "apexflightops",
     "description": "Apex Flight Ops API module for phpVMS 7.x.x",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "attribution": {
         "text": "Cardinal Horizon",
         "url": "https://apex.cardinalhorizon.com"
