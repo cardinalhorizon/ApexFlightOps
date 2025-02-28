@@ -31,12 +31,14 @@ use Illuminate\View\View;
 class SimBriefController
 {
     public function __construct(
-        private readonly FareService $fareSvc,
+        private readonly FareService      $fareSvc,
         private readonly FlightRepository $flightRepo,
-        private readonly ModuleService $moduleSvc,
-        private readonly SimBriefService $simBriefSvc,
-        private readonly UserService $userSvc
-    ) {}
+        private readonly ModuleService    $moduleSvc,
+        private readonly SimBriefService  $simBriefSvc,
+        private readonly UserService      $userSvc
+    )
+    {
+    }
 
     /**
      * Show the main OFP form
@@ -69,7 +71,7 @@ class SimBriefController
         }
 
         // Generate SimBrief Static ID
-        $static_id = $user->ident.'_'.$flight->id;
+        $static_id = $user->ident . '_' . $flight->id;
 
         // No aircraft selected, try to find one from a bid
         if (!$aircraft_id) {
@@ -115,7 +117,7 @@ class SimBriefController
                 ->get();
 
             return view('flights.simbrief_aircraft', [
-                'flight'    => $flight,
+                'flight' => $flight,
                 'aircrafts' => $aircraft,
             ]);
         }
@@ -123,7 +125,7 @@ class SimBriefController
         // Check if a Simbrief profile already exists
         $simbrief = SimBrief::select('id')->where([
             'flight_id' => $flight_id,
-            'user_id'   => $user->id,
+            'user_id' => $user->id,
         ])->first();
 
         if ($simbrief) {
@@ -199,15 +201,15 @@ class SimBriefController
             $count = floor(($fare->capacity * rand($loadmin, $loadmax)) / 100);
             $tpaxfig += $count;
             $pax_load_sheet[] = [
-                'id'       => $fare->id,
-                'code'     => $fare->code,
-                'name'     => $fare->name,
-                'type'     => $fare->type,
-                'capacity' => (int) $fare->capacity,
-                'count'    => $count,
+                'id' => $fare->id,
+                'code' => $fare->code,
+                'name' => $fare->name,
+                'type' => $fare->type,
+                'capacity' => (int)$fare->capacity,
+                'count' => $count,
             ];
 
-            $loaddist[] = $fare->code.' '.$count;
+            $loaddist[] = $fare->code . ' ' . $count;
         }
 
         // Calculate and convert weights according to SimBrief requirements
@@ -230,15 +232,15 @@ class SimBriefController
             $count = ceil((($fare->capacity - $tbagload) * rand($cgoloadmin, $cgoloadmax)) / 100);
             $tcargoload += $count;
             $cargo_load_sheet[] = [
-                'id'       => $fare->id,
-                'code'     => $fare->code,
-                'name'     => $fare->name,
-                'type'     => $fare->type,
+                'id' => $fare->id,
+                'code' => $fare->code,
+                'name' => $fare->name,
+                'type' => $fare->type,
                 'capacity' => $fare->capacity,
-                'count'    => $count,
+                'count' => $count,
             ];
 
-            $loaddist[] = $fare->code.' '.$count;
+            $loaddist[] = $fare->code . ' ' . $count;
         }
 
         $tpayload = $tpaxload + $tbagload + $tcargoload;
@@ -253,11 +255,11 @@ class SimBriefController
             'paxwgt' => $pax_weight,
             'bagwgt' => $bag_weight,
             // Airframe Weights needs to be thousands of pounds, with 3 digit precision like 85.715
-            'mzfw'    => (filled($aircraft->zfw) && $aircraft->zfw->internal(0) > 0) ? round($aircraft->zfw->internal(0) / 1000, 3) : null,
-            'mtow'    => (filled($aircraft->mtow) && $aircraft->mtow->internal(0) > 0) ? round($aircraft->mtow->internal(0) / 1000, 3) : null,
-            'mlw'     => (filled($aircraft->mlw) && $aircraft->mlw->internal(0) > 0) ? round($aircraft->mlw->internal(0) / 1000, 3) : null,
+            'mzfw' => (filled($aircraft->zfw) && $aircraft->zfw->internal(0) > 0) ? round($aircraft->zfw->internal(0) / 1000, 3) : null,
+            'mtow' => (filled($aircraft->mtow) && $aircraft->mtow->internal(0) > 0) ? round($aircraft->mtow->internal(0) / 1000, 3) : null,
+            'mlw' => (filled($aircraft->mlw) && $aircraft->mlw->internal(0) > 0) ? round($aircraft->mlw->internal(0) / 1000, 3) : null,
             'hexcode' => filled($aircraft->hex_code) ? $aircraft->hex_code : null,
-            'maxpax'  => $acd_maxpax,
+            'maxpax' => $acd_maxpax,
         ];
 
         $actype = (filled($aircraft->simbrief_type)) ? $aircraft->simbrief_type : ((filled(optional($aircraft->subfleet)->simbrief_type)) ? $aircraft->subfleet->simbrief_type : $aircraft->icao);
@@ -266,27 +268,27 @@ class SimBriefController
 
         // Show the main simbrief form
         return view('flights.simbrief_form', [
-            'user'             => $user,
-            'flight'           => $flight,
-            'aircraft'         => $aircraft,
-            'pax_weight'       => $pax_weight,
-            'bag_weight'       => $bag_weight,
-            'loadmin'          => $loadmin,
-            'loadmax'          => $loadmax,
-            'pax_load_sheet'   => $pax_load_sheet,
+            'user' => $user,
+            'flight' => $flight,
+            'aircraft' => $aircraft,
+            'pax_weight' => $pax_weight,
+            'bag_weight' => $bag_weight,
+            'loadmin' => $loadmin,
+            'loadmax' => $loadmax,
+            'pax_load_sheet' => $pax_load_sheet,
             'cargo_load_sheet' => $cargo_load_sheet,
-            'tpaxfig'          => $tpaxfig,
-            'tpaxload'         => $tpaxload,
-            'tbagload'         => $tbagload,
-            'tpayload'         => $tpayload,
-            'tcargoload'       => $tcargoload,
-            'loaddist'         => implode(' ', $loaddist).' BAG '.$tbagload,
-            'static_id'        => $static_id,
-            'sbaircraft'       => $sbaircraft,
-            'sbairframes'      => filled($sbairframes) ? $sbairframes : null,
-            'acdata'           => json_encode($acdata),
-            'actype'           => $actype,
-            'layouts'          => $layouts,
+            'tpaxfig' => $tpaxfig,
+            'tpaxload' => $tpaxload,
+            'tbagload' => $tbagload,
+            'tpayload' => $tpayload,
+            'tcargoload' => $tcargoload,
+            'loaddist' => implode(' ', $loaddist) . ' BAG ' . $tbagload,
+            'static_id' => $static_id,
+            'sbaircraft' => $sbaircraft,
+            'sbairframes' => filled($sbairframes) ? $sbairframes : null,
+            'acdata' => json_encode($acdata),
+            'actype' => $actype,
+            'layouts' => $layouts,
         ]);
     }
 
@@ -319,13 +321,13 @@ class SimBriefController
         $bid = Bid::where(['user_id' => $user->id, 'flight_id' => $simbrief->flight_id])->first();
 
         return view('flights.simbrief_briefing', [
-            'user'         => $user,
-            'simbrief'     => $simbrief,
-            'wakecat'      => $wakecat,
-            'equipment'    => $equipment,
-            'transponder'  => $transponder,
-            'bid'          => $bid,
-            'flight'       => $simbrief->flight,
+            'user' => $user,
+            'simbrief' => $simbrief,
+            'wakecat' => $wakecat,
+            'equipment' => $equipment,
+            'transponder' => $transponder,
+            'bid' => $bid,
+            'flight' => $simbrief->flight,
             'acars_plugin' => $this->moduleSvc->isModuleActive('VMSAcars'),
         ]);
     }
@@ -356,37 +358,18 @@ class SimBriefController
             $simbrief->save();
         }
 
-        return redirect(route('frontend.simbrief.generate').'?flight_id='.$flight_id);
+        return redirect(route('frontend.simbrief.generate') . '?flight_id=' . $flight_id);
     }
 
     /**
      * Create a prefile of this PIREP with a given OFP. Then redirect the
      * user to the newly prefiled PIREP
      */
-    public function prefile(Request $request): RedirectResponse
+    public function getOFP(Request $request, $id)
     {
-        $sb = SimBrief::find($request->id);
-        if (!$sb) {
-            return redirect(route('frontend.flights.index'));
-        }
+        $ofp = SimBrief::where(['id' => $id])->firstOrFail();
 
-        // Redirect to the prefile page, with the flight_id and a simbrief_id
-        $rd = route('frontend.pireps.create').'?sb_id='.$sb->id;
-
-        return redirect($rd);
-    }
-
-    /**
-     * Cancel the SimBrief request
-     */
-    public function cancel(Request $request): RedirectResponse
-    {
-        $sb = SimBrief::find($request->id);
-        if (!$sb) {
-            $sb->delete();
-        }
-
-        return redirect(route('frontend.simbrief.prefile', ['id' => $request->id]));
+        return json_encode(simplexml_load_string($ofp->ofp_xml));
     }
 
     /**

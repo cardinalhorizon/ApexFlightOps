@@ -177,10 +177,15 @@ class ApiFlightsController extends Controller
                 'aircraft',
             ]
         )->paginate();
+        // load the aircraft ident attribute
+        foreach ($bids as $bid) {
+            $bid->aircraft->append('ident');
+        }
+
         $resoruce = \App\Http\Resources\Bid::collection($bids);
         return $resoruce;
     }
-    
+
     private function generateGISData($flight)
     {
         // This is a placeholder for the GIS data

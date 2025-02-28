@@ -5,6 +5,7 @@ namespace Modules\ApexFlightOps\Providers;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Modules\ApexFlightOps\Http\Middleware\ResponseHeaders;
 
 /**
  * Register the routes required for your module here
@@ -85,7 +86,7 @@ class RouteServiceProvider extends ServiceProvider
             'as'         => 'api.apexflightops.',
             'prefix'     => 'api/apexflightops',
             'namespace'  => $this->namespace.'\Api',
-            'middleware' => ['api'],
+            'middleware' => ['api', ResponseHeaders::class],
         ];
 
         Route::group($config, function() {
